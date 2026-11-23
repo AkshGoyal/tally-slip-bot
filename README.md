@@ -14,8 +14,11 @@ and typing mistakes end up on invoices.
 A private Telegram bot that turns photos of those slips into Tally Sales invoices. The owner
 keeps working the way they already do (a phone and a chat), and the bot does the re-typing:
 
-- **It can't invent names.** The vision model's output is constrained by a JSON schema to the
-  exact customer and item names in Tally.
+- **Two vision models, each the other's backup.** Gemini and DeepSeek Janus Pro both read
+  slips, and they read them differently, so one covers when the other struggles.
+- **It can't invent names.** The model's output is constrained by a JSON schema to the
+  exact customer and item names in Tally, and fuzzy matching against the Tally masters
+  handles abbreviations and misspellings.
 - **Corrections are one line.** Reply by text or voice note ("line 2 is 300"), then tap Save.
   Nothing is saved without a human tap.
 - **It gets better with use.** Spellings confirmed on past slips are remembered per customer.
@@ -48,7 +51,7 @@ waiting slips, as a Telegram Mini App when running on Lambda).
 | File | What it does |
 |---|---|
 | `tally_agent/bot.py` | Telegram handlers: photos, replies, voice notes, buttons, weekly job |
-| `tally_agent/extract.py` | Reads a slip photo with a vision LLM (OpenRouter), using a JSON schema |
+| `tally_agent/extract.py` | Reads a slip photo with a vision LLM (Gemini or DeepSeek Janus Pro via OpenRouter), using a JSON schema |
 | `tally_agent/models.py` | The `Slip` model, checks, learned spellings, pricing into a `Voucher` |
 | `tally_agent/assistant.py` | The tool-using assistant for rate lookups, rate changes and slip lookups |
 | `tally_agent/rates.py` | The rates sheet: Google Sheets or a local CSV |
